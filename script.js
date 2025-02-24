@@ -72,4 +72,8 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-let gameLoop = setInterval(updateGame, 30); // Start the game loop
+let gameLoop;
+function startGame() {
+    gameLoop = setInterval(UpdateGame, 30);
+}
+startGame();
