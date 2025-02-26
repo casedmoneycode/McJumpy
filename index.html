@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Stickman Runner</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Stickman Game</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
 </head>
 <body>
     <canvas id="gameCanvas" width="600" height="300"></canvas>
-    <script src="script.js"></script>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Stickman properties
+        const stickmanWidth = 20;
+        const stickmanHeight = 50;
+        const stickmanX = 50;
+        const stickmanY = canvas.height - stickmanHeight;
+
+        function drawStickman() {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(stickmanX, stickmanY, stickmanWidth, stickmanHeight);
+        }
+
+        drawStickman(); // Draw the stickman
+    </script>
 </body>
 </html>
