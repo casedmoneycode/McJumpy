@@ -1,3 +1,8 @@
+Got it! Let's refine that stickman to have a circular head, arms, legs, and feet.
+
+**HTML (index.html):**
+
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,17 +19,66 @@
         const ctx = canvas.getContext('2d');
 
         // Stickman properties
-        const stickmanWidth = 20;
-        const stickmanHeight = 50;
         const stickmanX = 50;
-        const stickmanY = canvas.height - stickmanHeight;
+        const stickmanY = 250; // Adjusted for legs/feet
+        const headRadius = 15;
+        const bodyHeight = 50;
+        const armLength = 30;
+        const legLength = 40;
+        const footLength = 10;
 
         function drawStickman() {
-            ctx.fillStyle = 'black';
-            ctx.fillRect(stickmanX, stickmanY, stickmanWidth, stickmanHeight);
+            ctx.beginPath(); // Start a new path
+
+            // Head
+            ctx.arc(stickmanX, stickmanY - bodyHeight, headRadius, 0, Math.PI * 2);
+
+            // Body
+            ctx.moveTo(stickmanX, stickmanY - bodyHeight + headRadius);
+            ctx.lineTo(stickmanX, stickmanY);
+
+            // Arms
+            ctx.moveTo(stickmanX, stickmanY - bodyHeight / 2);
+            ctx.lineTo(stickmanX - armLength, stickmanY - bodyHeight / 2 + 10); // Left arm
+            ctx.moveTo(stickmanX, stickmanY - bodyHeight / 2);
+            ctx.lineTo(stickmanX + armLength, stickmanY - bodyHeight / 2 + 10); // Right arm
+
+            // Legs
+            ctx.moveTo(stickmanX, stickmanY);
+            ctx.lineTo(stickmanX - legLength / 2, stickmanY + legLength); // Left leg
+            ctx.moveTo(stickmanX, stickmanY);
+            ctx.lineTo(stickmanX + legLength / 2, stickmanY + legLength); // Right leg
+
+            // Feet
+            ctx.moveTo(stickmanX - legLength / 2, stickmanY + legLength);
+            ctx.lineTo(stickmanX - legLength / 2 - footLength, stickmanY + legLength); // Left foot
+            ctx.moveTo(stickmanX + legLength / 2, stickmanY + legLength);
+            ctx.lineTo(stickmanX + legLength / 2 + footLength, stickmanY + legLength); // Right foot
+
+            ctx.stroke(); // Draw the path
         }
 
-        drawStickman(); // Draw the stickman
+        drawStickman();
     </script>
 </body>
 </html>
+```
+
+**Explanation of Changes:**
+
+* **Stickman Properties:** Added properties for `headRadius`, `bodyHeight`, `armLength`, `legLength`, and `footLength` to control the stickman's proportions.
+* **`drawStickman()` Function:**
+    * **`ctx.beginPath()`:** Starts a new drawing path.
+    * **Head:** Uses `ctx.arc()` to draw a circle for the head.
+    * **Body:** Uses `ctx.moveTo()` and `ctx.lineTo()` to draw the vertical line of the body.
+    * **Arms:** Draws the arms as diagonal lines.
+    * **Legs:** Draws the legs as diagonal lines.
+    * **Feet:** Draws short horizontal lines for the feet.
+    * **`ctx.stroke()`:** Draws the outline of the entire shape.
+
+**How to Run:**
+
+1.  **Save:** Save the code as `index.html`.
+2.  **Open:** Open `index.html` in your web browser.
+
+You should now see a more realistic stickman figure!  Let me know if you'd like to make any adjustments or add movement.
