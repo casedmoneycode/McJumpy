@@ -57,7 +57,7 @@ function updateGame() {
         stickmanY < canvas.height - blockHeight &&
         stickmanY + stickmanHeight > canvas.height - blockHeight) {
         console.log("Game Over!");
-        clearInterval(gameLoop); // Stop the game loop
+        cancelAnimationFrame(gameLoop); // Stop the game loop
     }
 
     drawStickman();
