@@ -74,6 +74,6 @@ document.addEventListener('keydown', (event) => {
 
 let gameLoop;
 function startGame() {
-    gameLoop = setInterval(UpdateGame, 30);
+    gameLoop = requestAnimationFrame(UpdateGame, 30);
 }
 startGame();
