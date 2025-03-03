@@ -1,84 +1,95 @@
-Got it! Let's refine that stickman to have a circular head, arms, legs, and feet.
-
-**HTML (index.html):**
-
-```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Stickman Game</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balloon Popping Game</title>
     <style>
-        body { margin: 0; overflow: hidden; }
+        body { margin: 0; overflow: hidden; background: skyblue; }
         canvas { display: block; }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="600" height="300"></canvas>
+    <canvas id="gameCanvas"></canvas>
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
 
-        // Stickman properties
-        const stickmanX = 50;
-        const stickmanY = 250; // Adjusted for legs/feet
-        const headRadius = 15;
-        const bodyHeight = 50;
-        const armLength = 30;
-        const legLength = 40;
-        const footLength = 10;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-        function drawStickman() {
-            ctx.beginPath(); // Start a new path
+        let balloons = [];
+        let score = 0;
 
-            // Head
-            ctx.arc(stickmanX, stickmanY - bodyHeight, headRadius, 0, Math.PI * 2);
+        const balloonImages = {
+            red: "https://i.ibb.co/5gjNYFy8/1000-F-255978289-Ec-X6t-Xwaqx2-GKcl-Wax-Tx17ivj9xb-Gz4-K-1-1.jpg",
+            blue: "https://i.ibb.co/5gjNYFy8/1000-F-255978289-Ec-X6t-Xwaqx2-GKcl-Wax-Tx17ivj9xb-Gz4-K-1-1.jpg",
+            green: "https://i.ibb.co/5gjNYFy8/1000-F-255978289-Ec-X6t-Xwaqx2-GKcl-Wax-Tx17ivj9xb-Gz4-K-1-1.jpg",
+            yellow: "https://i.ibb.co/5gjNYFy8/1000-F-255978289-Ec-X6t-Xwaqx2-GKcl-Wax-Tx17ivj9xb-Gz4-K-1-1.jpg"
+        };
 
-            // Body
-            ctx.moveTo(stickmanX, stickmanY - bodyHeight + headRadius);
-            ctx.lineTo(stickmanX, stickmanY);
+        class Balloon {
+            constructor(x, y, radius, color, speed) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.speed = speed;
+                this.image = new Image();
+                this.image.src = balloonImages[color];
+            }
 
-            // Arms
-            ctx.moveTo(stickmanX, stickmanY - bodyHeight / 2);
-            ctx.lineTo(stickmanX - armLength, stickmanY - bodyHeight / 2 + 10); // Left arm
-            ctx.moveTo(stickmanX, stickmanY - bodyHeight / 2);
-            ctx.lineTo(stickmanX + armLength, stickmanY - bodyHeight / 2 + 10); // Right arm
+            draw() {
+                ctx.drawImage(this.image, this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
+            }
 
-            // Legs
-            ctx.moveTo(stickmanX, stickmanY);
-            ctx.lineTo(stickmanX - legLength / 2, stickmanY + legLength); // Left leg
-            ctx.moveTo(stickmanX, stickmanY);
-            ctx.lineTo(stickmanX + legLength / 2, stickmanY + legLength); // Right leg
-
-            // Feet
-            ctx.moveTo(stickmanX - legLength / 2, stickmanY + legLength);
-            ctx.lineTo(stickmanX - legLength / 2 - footLength, stickmanY + legLength); // Left foot
-            ctx.moveTo(stickmanX + legLength / 2, stickmanY + legLength);
-            ctx.lineTo(stickmanX + legLength / 2 + footLength, stickmanY + legLength); // Right foot
-
-            ctx.stroke(); // Draw the path
+            update() {
+                this.y -= this.speed;
+            }
         }
 
-        drawStickman();
+        function spawnBalloon() {
+            const x = Math.random() * canvas.width;
+            const radius = Math.random() * 40 + 30;
+            const speed = Math.random() * 2 + 1;
+            const colors = Object.keys(balloonImages);
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            balloons.push(new Balloon(x, canvas.height, radius, color, speed));
+        }
+
+        function updateGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            balloons.forEach((balloon, index) => {
+                balloon.update();
+                balloon.draw();
+
+                if (balloon.y + balloon.radius < 0) {
+                    balloons.splice(index, 1);
+                }
+            });
+
+            requestAnimationFrame(updateGame);
+        }
+
+        canvas.addEventListener("click", (event) => {
+            const clickX = event.clientX;
+            const clickY = event.clientY;
+
+            balloons.forEach((balloon, index) => {
+                const dx = balloon.x - clickX;
+                const dy = balloon.y - clickY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < balloon.radius) {
+                    balloons.splice(index, 1);
+                    score += 10;
+                    console.log("Score:", score);
+                }
+            });
+        });
+
+        setInterval(spawnBalloon, 1000);
+        updateGame();
     </script>
 </body>
 </html>
-```
-
-**Explanation of Changes:**
-
-* **Stickman Properties:** Added properties for `headRadius`, `bodyHeight`, `armLength`, `legLength`, and `footLength` to control the stickman's proportions.
-* **`drawStickman()` Function:**
-    * **`ctx.beginPath()`:** Starts a new drawing path.
-    * **Head:** Uses `ctx.arc()` to draw a circle for the head.
-    * **Body:** Uses `ctx.moveTo()` and `ctx.lineTo()` to draw the vertical line of the body.
-    * **Arms:** Draws the arms as diagonal lines.
-    * **Legs:** Draws the legs as diagonal lines.
-    * **Feet:** Draws short horizontal lines for the feet.
-    * **`ctx.stroke()`:** Draws the outline of the entire shape.
-
-**How to Run:**
-
-1.  **Save:** Save the code as `index.html`.
-2.  **Open:** Open `index.html` in your web browser.
-
-You should now see a more realistic stickman figure!  Let me know if you'd like to make any adjustments or add movement.
